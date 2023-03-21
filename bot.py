@@ -38,7 +38,8 @@ from telegram.ext import (
 
 import datetime
 
-import cohere
+from generation import execute
+from dotenv import load_dotenv
 
 TELEGRAM_BOT_TOKEN = ""  # test token
 COHERE_API_KEY = ""  # test key
@@ -46,7 +47,7 @@ COHERE_API_KEY = ""  # test key
 (MENU_STATE,
  CHAT_STATE,
  PRICING_STATE,
- ) = range(3)
+) = range(3)
 
 
 MAIN_MENU_KEYBOARD = [['💬 Chat', '🍭 Profile'], ['🛒 Pricing']]
@@ -88,23 +89,6 @@ def left_days_(date):
     delta = future_date - today
     print('delta:', delta.days)
     return delta.days
-
-def generate(prompt):
-    co = cohere.Client(COHERE_API_KEY)
-
-    try:
-        response = co.generate(  
-            model='xlarge',
-            prompt=prompt,
-            max_tokens=100,
-            temperature=0.7,
-            stop_sequences=["--"])
-
-        return response.generations[0].text
-    except Exception as e:
-        print(e)
-        return None
-
 
 @sync_to_async
 def _post_client(user):
@@ -235,7 +219,7 @@ async def chat_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
         balance = await _get_client_balance(context.user_data['id'])
 
         if (abs(int(left_days_(balance[0]['next_payment']))) > 0):
-            response = generate(prompt)
+            response = execute(prompt)
 
             if response:
                 await update.message.reply_text(response)
@@ -372,7 +356,8 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
-    app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).read_timeout(100). \
+    load_dotenv()
+    app = ApplicationBuilder().token(os.getenv("TELEGRAM_BOT_TOKEN")).read_timeout(100). \
         get_updates_read_timeout(100).build()
 
     conv_handler = ConversationHandler(
