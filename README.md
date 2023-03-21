@@ -11,7 +11,7 @@ CHATGPT_API_KEY=your-chatgpt-api-key
 
 
 ```
-pip install -r reqs.txt
+pip install -r requirements.txt
 ```
 
 ```
