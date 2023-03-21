@@ -17,3 +17,8 @@ ADD . /chatgptbot/
 
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
+
+EXPOSE 8080
+
+# Run app.py when the container launches
+CMD ["python", "bot.py"]
