@@ -171,10 +171,6 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('🌝 Was-sap, ' + user.first_name + '!')
     
     await update.message.reply_text(
-        "⬇️ Please, Join Our Channel! ⬇️",
-        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton('↗️ Join Channel ↗️', url=CHANNEL_LINK)]]))
-
-    await update.message.reply_text(
         '\nChoose an option:',
         reply_markup=ReplyKeyboardMarkup(MAIN_MENU_KEYBOARD, resize_keyboard=True, one_time_keyboard=False),
     )
