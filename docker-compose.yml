@@ -16,4 +16,4 @@ services:
     ports:
       - "8443:8443"
     environment:
-      - TELEGRAM_BOT_TOKEN=5601393100:AAGc7xXgGRGMY4E_n4rzE-YOzX87UGv0J14
+      - TELEGRAM_BOT_TOKEN=5601393100:AAGdAkp9VY_PZJIYtmlV-M9X22Eu51qvh00
