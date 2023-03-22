@@ -1,17 +1,19 @@
-version: '3'
+version: "3.9"
 
 services:
-  bot:
-    build: .
-    command: python bot.py
-    restart: always
-    depends_on:
-      - django
   web:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8080"
-    container_name: chatgptbot
-    volumes:
-      - .:/chatgptbot
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=django-insecure-lgxq)18p&le-*@4neeq@qmyr_a3pqgksh=p8p2#z=oq(d#^1$0
+
+  bot:
+    build: .
+    ports:
+      - "8443:8443"
+    environment:
+      - TELEGRAM_BOT_TOKEN=5601393100:AAGc7xXgGRGMY4E_n4rzE-YOzX87UGv0J14
