@@ -1,1 +1,5 @@
 env
+.env
+.dccache
+.DS_Store
+.vscode

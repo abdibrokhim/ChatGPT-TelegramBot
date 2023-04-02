@@ -16,3 +16,6 @@ def execute(prompt: str) -> str:
     )
     
     return response['choices'][0]['message']['content']
+
+
+# print(execute("Hello,"))

@@ -50,13 +50,13 @@ COHERE_API_KEY = ""  # test key
 ) = range(3)
 
 
-MAIN_MENU_KEYBOARD = [['💬 Chat', '🍭 Profile'], ['🛒 Pricing']]
-TARIFF_KEYBOARD = [['🌚 Basic', '🌝 Advanced', '🌟 Premium'], ['🔙 Back']]
+MAIN_MENU_KEYBOARD = [['💬 Начать диалог', '💼 Профиль'], ['💳 Стоимость']]
+TARIFF_KEYBOARD = [['🎞 Базовый', '🎫 Оптимальный', '🎟 Премиум'], ['🔙 назад']]
 
 CHANNEL_LINK = ""
 CHANNEL_USERNAME = ""
 
-DEVELOPER = ""
+DEVELOPER = "@"
 SUPPORT_BOT = ""
 
 VISA_CARD_NUMBER = ""
@@ -168,10 +168,10 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await _post_client(context.user_data)
         await _post_balance(context.user_data)
 
-    await update.message.reply_text('🌝 Was-sap, ' + user.first_name + '!')
+    await update.message.reply_text('🤖🧠💠 Приветствую, ' + user.first_name + '!')
     
     await update.message.reply_text(
-        '\nChoose an option:',
+        '\nВыберите опцию:',
         reply_markup=ReplyKeyboardMarkup(MAIN_MENU_KEYBOARD, resize_keyboard=True, one_time_keyboard=False),
     )
 
@@ -184,7 +184,7 @@ async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['username'] = user.username
 
     await update.message.reply_text(
-        '\nChoose an option:',
+        '\nВыберите опцию:',
         reply_markup=ReplyKeyboardMarkup(MAIN_MENU_KEYBOARD, resize_keyboard=True, one_time_keyboard=False),
     )
 
@@ -196,9 +196,9 @@ async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['id'] = user.id
 
     txt = """
-✍️ Ask any question about anything.
+✍️ Искусственный интеллект готов ответить на любой вопрос.
 
-ex: Explain quantum computing in simple terms.
+Например,можно спросить Что такое квантовые волны,а также можно узнать почему татары любят чак-чак и можно попросить Написать сочинение про Татарстан
 """
 
     await update.message.reply_text(text=txt)
@@ -210,7 +210,7 @@ async def chat_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
     prompt = update.message.text
 
     if prompt:
-        await update.message.reply_text('🍪 Cooking...')
+        await update.message.reply_text('🖨 Информация уже в пути ...')
 
         balance = await _get_client_balance(context.user_data['id'])
 
@@ -220,9 +220,9 @@ async def chat_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
             if response:
                 await update.message.reply_text(response)
             else:
-                await update.message.reply_text("Sorry, I don't know the answer.")
+                await update.message.reply_text("Извините, но об этом вам еще рано знать.")
         else:
-            await update.message.reply_text("Sorry, your plan period has expired. Please, Upgrade your plan!")
+            await update.message.reply_text("Извините, ваше время на тарифе закончились. Пожалуйста, Обновите свой тариф!")
 
     return CHAT_STATE
 
@@ -230,7 +230,7 @@ async def chat_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
 def proceed_payment():
 
     txt = f"""
-We accept the following payment methods:
+Мы принимаем следующие способы оплаты:
 
 VISA
 {VISA_CARD_NUMBER}
@@ -241,30 +241,30 @@ BITCOIN
 ETHEREUM
 {ETHEREUM_ADDRESS}
 
-Send screenshot of payment receipt, your Telegram username or ID to {SUPPORT_BOT} or {DEVELOPER}
+Отправьте скриншот квитанции об оплате, свое имя пользователя или идентификатор Telegram {SUPPORT_BOT} или {DEVELOPER}
 
-Confirm Payment: {SUPPORT_BOT}
-Any problem? Contact: {DEVELOPER}
+Проверка платежа: {SUPPORT_BOT}
+Возникли проблемы? Пишите: {DEVELOPER}
 """
     return txt
 
 
 async def tariff_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        '📖 Available Plans:',
+        '📖 Тарифные опции:',
         reply_markup=ReplyKeyboardMarkup(TARIFF_KEYBOARD, resize_keyboard=True)
     )
     return PRICING_STATE
 
 
 async def basic_tariff_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tariff = await _get_tariff('Basic')
+    tariff = await _get_tariff('Базовый')
 
     if tariff:
         txt = f"""
-🌚 What is Basic Plan?:
-    💰 Price: ${tariff[0]['price']}
-    🌟 Duration: {tariff[0]['duration']} days
+🌚 Что входит в базовый тариф?:
+    💰 Price: руб{tariff[0]['price']}
+    🌟 Duration: {tariff[0]['duration']} дней
     """ + proceed_payment()
 
         await update.message.reply_text(
@@ -275,13 +275,13 @@ async def basic_tariff_handler(update: Update, context: ContextTypes.DEFAULT_TYP
 
 
 async def advanced_tariff_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tariff = await _get_tariff('Advanced')
+    tariff = await _get_tariff('Оптимальный')
 
     if tariff:
         txt = f"""
-🌚 What is Advanced Plan?:
-    💰 Price: ${tariff[0]['price']}
-    🌟 Duration: {tariff[0]['duration']} days\n
+🌚 Что входит в оптимальный тариф?:
+    💰 Стоимость: руб{tariff[0]['price']}
+    🌟 Продолжительность: {tariff[0]['duration']} дней\n
     """ + proceed_payment()
 
         await update.message.reply_text(
@@ -292,13 +292,13 @@ async def advanced_tariff_handler(update: Update, context: ContextTypes.DEFAULT_
 
 
 async def premium_tariff_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    tariff = await _get_tariff('Premium')
+    tariff = await _get_tariff('Премиум')
 
     if tariff:
         txt = f"""
-🌚 What is Premium Plan?:
-    💰 Price: ${tariff[0]['price']}
-    🌟 Duration: {tariff[0]['duration']} days\n
+🌚 Что входит в премиум тариф?:
+    💰 Стоимость: руб{tariff[0]['price']}
+    🌟 Продолжительность: {tariff[0]['duration']} дней\n
     """ + proceed_payment()
 
         await update.message.reply_text(
@@ -320,16 +320,16 @@ async def profile_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print('plan:', plan)
 
         txt = f"""
-🍪 Profile:
+💼 Профиль:
     ID: {balance[0]['tg_id']} 
-    Current Plan: {balance[0]['tariff']} 
-    Price: {plan[0]['price']} 
-    Duration: {plan[0]['duration']} 
-    Days Left: {abs(int(left_days_(balance[0]['next_payment'])))} 
-    Last Payment: {balance[0]['created_at'].strftime('%d.%m.%Y')}
+    Ваш тариф: {balance[0]['tariff']} 
+    Стоимость: {plan[0]['price']} 
+    Продолжительность: {plan[0]['duration']} 
+    Осталось дней: {abs(int(left_days_(balance[0]['next_payment'])))} 
+    Последний платеж: {balance[0]['created_at'].strftime('%d.%m.%Y')}
     """
         if (abs(int(left_days_(balance[0]['next_payment'])))):
-            txt += '\n🛎 Don\'t forget to Upgrade your plan!'
+            txt += '\n🛎 Не забудьте обновить свой тарифный план !'
 
         await update.message.reply_text(
             text=txt,
@@ -342,7 +342,7 @@ async def profile_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def report_len_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cls = await _get_clients()
 
-    await update.message.reply_text(text='🌝 Total: ' + str(len(cls)))
+    await update.message.reply_text(text='🌝 Всего: ' + str(len(cls)))
 
     return MENU_STATE
 
@@ -363,21 +363,21 @@ def main():
         ],
         states={
             MENU_STATE: [
-                MessageHandler(filters.Regex('.*Chat$'), chat_handler),
-                MessageHandler(filters.Regex('.*Profile$'), profile_handler),
-                MessageHandler(filters.Regex('.*Pricing$'), tariff_handler),
+                MessageHandler(filters.Regex('.*Начать диалог$'), chat_handler),
+                MessageHandler(filters.Regex('.*Профиль$'), profile_handler),
+                MessageHandler(filters.Regex('.*Стоимость$'), tariff_handler),
             ],
             CHAT_STATE: [
-                MessageHandler(filters.Regex('.*Chat$'), chat_handler),
-                MessageHandler(filters.Regex('.*Profile$'), profile_handler),
-                MessageHandler(filters.Regex('.*Pricing$'), tariff_handler),
+                MessageHandler(filters.Regex('.*Начать диалог$'), chat_handler),
+                MessageHandler(filters.Regex('.*Профиль$'), profile_handler),
+                MessageHandler(filters.Regex('.*Стоимость$'), tariff_handler),
                 MessageHandler(filters.TEXT & ~filters.COMMAND, chat_query_handler),
             ],
             PRICING_STATE: [
-                MessageHandler(filters.Regex(".*Basic$"), basic_tariff_handler),
-                MessageHandler(filters.Regex(".*Advanced$"), advanced_tariff_handler),
-                MessageHandler(filters.Regex(".*Premium$"), premium_tariff_handler),
-                MessageHandler(filters.Regex(".*Back$"), menu_handler),
+                MessageHandler(filters.Regex(".*Базовый$"), basic_tariff_handler),
+                MessageHandler(filters.Regex(".*Оптимальный$"), advanced_tariff_handler),
+                MessageHandler(filters.Regex(".*Премиум$"), premium_tariff_handler),
+                MessageHandler(filters.Regex(".*назад$"), menu_handler),
             ],
         },
         fallbacks=[
@@ -386,9 +386,9 @@ def main():
             CommandHandler('me', profile_handler),
             CommandHandler('plans', tariff_handler),
             CommandHandler('r', report_len_handler),
-            MessageHandler(filters.Regex('.*Chat$'), chat_handler),
-            MessageHandler(filters.Regex('.*Profile$'), profile_handler),
-            MessageHandler(filters.Regex('.*Pricing$'), tariff_handler),
+            MessageHandler(filters.Regex('.*Начать диалог$'), chat_handler),
+            MessageHandler(filters.Regex('.*Профиль$'), profile_handler),
+            MessageHandler(filters.Regex('.*Стоимость$'), tariff_handler),
         ],
     )
 
